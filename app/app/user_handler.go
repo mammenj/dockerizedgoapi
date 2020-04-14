@@ -6,7 +6,6 @@ import (
 	"log"
 	"net/http"
 	"strconv"
-	"time"
 
 	"github.com/go-chi/chi"
 	"github.com/jinzhu/gorm"
@@ -14,8 +13,6 @@ import (
 	"myapp/app/myauth"
 	"myapp/model"
 	"myapp/repository"
-
-	jwtgo "github.com/dgrijalva/jwt-go"
 )
 
 func (app *App) HandleListUsers(w http.ResponseWriter, r *http.Request) {
@@ -72,16 +69,12 @@ func (app *App) HandleLoginUser(w http.ResponseWriter, r *http.Request) {
 	password := chi.URLParam(r, "password")
 
 	app.logger.Log().Msg("Userid is ::" + userid + "::")
-	app.logger.Log().Msg("password is ::" + password + "::")
-
 	user, err := repository.GetUserByUserid(app.db, userid)
-
 	if err != nil {
 		if err == gorm.ErrRecordNotFound {
 			w.WriteHeader(http.StatusNotFound)
 			return
 		}
-
 		app.logger.Warn().Err(err).Msg("")
 
 		w.WriteHeader(http.StatusInternalServerError)
@@ -89,37 +82,17 @@ func (app *App) HandleLoginUser(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	app.logger.Log().Msgf("User is :: ", user)
-
 	success := myauth.ComparePasswords(user.Password, []byte(password))
-
-	//roles := make([]string, len(user.Roles))
-	var roles []string
-
-	for _, role := range user.Roles {
-		if role.Roleid != "" {
-			roles = append(roles, role.Roleid)
-		}
-	}
-
-	if !success || len(user.Roles) < 1 {
-		app.logger.Log().Msg("password is NOT Correct or No roles assigned")
+	if !success {
+		app.logger.Log().Msg("password is NOT Correct")
 		w.WriteHeader(http.StatusUnauthorized)
 		return
 	}
-	tokenClaim := jwtgo.MapClaims{
-		"user_id": user.Userid,
-		"expiry":  time.Now().Add(time.Minute * 15).Unix(),
-		"roles":   roles,
-	}
-	//
 	app.logger.Warn().Msg("DEBUG JWT: <<<<<<<<<>>>>>>>User: " + user.Userid)
-	myjwt := myauth.JWT{}.New()
-	jwtoken := myjwt.Encode(tokenClaim)
+	jwtoken := myauth.JWTClient{}.New(user)
 	log.Println("DEBUG JWT:", jwtoken)
-
 	if err := json.NewEncoder(w).Encode(jwtoken); err != nil {
 		app.logger.Warn().Err(err).Msg("")
-
 		w.WriteHeader(http.StatusInternalServerError)
 		fmt.Fprintf(w, `{"error": "%v"}`, appErrJsonCreationFailure)
 		return
