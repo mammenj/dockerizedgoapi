@@ -1,4 +1,4 @@
-# Learning Cloud Native Go - myapp
+# Customized version of Learning Cloud Native Go - myapp
 
 ### Endpoints
 - To see the app is up
