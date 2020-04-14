@@ -11,7 +11,12 @@
     GET /api/v1/books/{id}
     PUT /api/v1/books/{id}
     DELETE /api/v1/books/{id}
+
+    GET /users
+    GET /users/{id}
+    POST /users
     
+    POST /token/{userid}/{password}
 <!--  -->
 ### Authentication
 - Added JWT authentication
