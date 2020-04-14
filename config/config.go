@@ -11,6 +11,7 @@ type Conf struct {
 	Debug  bool `env:"DEBUG,required"`
 	Server serverConf
 	Db     dbConf
+	JWTS   string `env:"JWTS,required"`
 }
 
 type serverConf struct {

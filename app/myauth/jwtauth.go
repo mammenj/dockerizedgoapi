@@ -3,6 +3,7 @@ package myauth
 import (
 	"fmt"
 	"log"
+	"myapp/config"
 	"net/http"
 
 	jwtgo "github.com/dgrijalva/jwt-go"
@@ -19,9 +20,10 @@ type JWT struct {
 
 //New JWT object
 func (JWT) New() *JWT {
+	conf := config.AppConfig()
 	jwt := &JWT{
 		tokenClaim: "roles",
-		tokenAuth:  jwtauth.New("HS256", []byte("mysecret"), nil),
+		tokenAuth:  jwtauth.New("HS256", []byte(conf.JWTS), nil),
 	}
 
 	// tokenClaim := jwtgo.MapClaims{
