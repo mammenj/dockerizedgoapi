@@ -1,0 +1,1 @@
+SELECT * FROM `myapp_db`.`books` LIMIT 1000;

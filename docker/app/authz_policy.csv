@@ -1,0 +1,7 @@
+p, viewer, /api/v1/*, GET
+p, editor, /api/v1/books, POST
+p, viewer, /api/v1/books, GET
+p, bob, /api/v1/books/*, POST
+p, editor, /api/v1/*, *
+p, admin, /api/v2/*, *
+
