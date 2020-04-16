@@ -31,10 +31,6 @@ func GetUser(db *gorm.DB, id uint) (*model.User, error) {
 func GetUserByUserid(db *gorm.DB, userid string) (*model.User, error) {
 	user := &model.User{}
 
-	// if err := db.Where("userid = ?", userid).First(&user).Related(&roles).Error; err != nil {
-	// 	return nil, err
-	// }
-
 	if err := db.Preload("Roles").First(&user, "userid = ?", userid).Error; err != nil {
 		return nil, err
 	}

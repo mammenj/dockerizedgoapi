@@ -8,7 +8,6 @@ import (
 	"strconv"
 
 	"github.com/go-chi/chi"
-	"github.com/jinzhu/gorm"
 
 	"myapp/app/myauth"
 	"myapp/model"
@@ -71,10 +70,10 @@ func (app *App) HandleLoginUser(w http.ResponseWriter, r *http.Request) {
 	app.logger.Log().Msg("Userid is ::" + userid + "::")
 	user, err := repository.GetUserByUserid(app.db, userid)
 	if err != nil {
-		if err == gorm.ErrRecordNotFound {
-			w.WriteHeader(http.StatusNotFound)
-			return
-		}
+		// if err == gorm.ErrRecordNotFound {
+		// 	w.WriteHeader(http.StatusNotFound)
+		// 	return
+		// }
 		app.logger.Warn().Err(err).Msg("")
 
 		w.WriteHeader(http.StatusInternalServerError)
@@ -111,10 +110,10 @@ func (app *App) HandleGetUser(w http.ResponseWriter, r *http.Request) {
 
 	user, err := repository.GetUser(app.db, uint(id))
 	if err != nil {
-		if err == gorm.ErrRecordNotFound {
-			w.WriteHeader(http.StatusNotFound)
-			return
-		}
+		// if err == gorm.ErrRecordNotFound {
+		// 	w.WriteHeader(http.StatusNotFound)
+		// 	return
+		// }
 
 		app.logger.Warn().Err(err).Msg("")
 
